@@ -1,0 +1,12 @@
+{
+    "name": "train/php-project",
+    "authors": [
+        {
+            "name": "LakGillJPN",
+            "email": "lakgill88@gmail.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.6"
+    }
+}
