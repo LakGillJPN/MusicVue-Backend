@@ -25,13 +25,29 @@ try {
     // Get data from frontend (JSON)
     $data = json_decode(file_get_contents("php://input"), true);
 
-    if (!isset($data['Username'])) {
-        echo json_encode(["error" => "Username is required"]);
+    if (!isset($data['Username']) || !isset($data['CognitoId']) || !isset($data['Email'])) {
+        echo json_encode(["error" => "Username, CognitoId, and Email are required"]);
         exit;
     }
 
-    $stmt = $pdo->prepare("INSERT INTO Users (Username) VALUES (:username)");
-    $stmt->execute(['username' => $data['Username']]);
+    // Check for duplicate CognitoId
+    $checkStmt = $pdo->prepare("SELECT COUNT(*) FROM Users WHERE CognitoId = :cognitoId");
+    $checkStmt->execute(['cognitoId' => $data['CognitoId']]);
+    if ($checkStmt->fetchColumn() > 0) {
+        echo json_encode(["error" => "CognitoId already exists"]);
+    exit;
+    }
+
+
+    $stmt = $pdo->prepare("
+        INSERT INTO Users (Username, CognitoId, Email) 
+        VALUES (:username, :cognitoId, :email)
+    ");
+    $stmt->execute([
+        'username' => $data['Username'],
+        'cognitoId' => $data['CognitoId'],
+        'email' => $data['Email'],
+    ]);
 
     echo json_encode(["message" => "User added", "userId" => $pdo->lastInsertId()]);
 

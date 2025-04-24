@@ -26,10 +26,24 @@ try {
     // Create 'users' table 
     $tableSql2 = "CREATE TABLE IF NOT EXISTS users (
         userId INT AUTO_INCREMENT PRIMARY KEY,
-        Username VARCHAR(100) NOT NULL
+        Username VARCHAR(100) NOT NULL UNIQUE,
+        CognitoId VARCHAR(100) NOT NULL UNIQUE,
+        Email VARCHAR(100) NOT NULL
     )";
     $pdo->exec($tableSql2);
     echo "Table 'users' created successfully.<br>";
+
+    // Create 'favourites' table
+    $tableSql3 = "CREATE TABLE IF NOT EXISTS favourites (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        userId INT NOT NULL,
+        favGenres TEXT,
+        favArtists TEXT,
+        favAlbums TEXT,
+        FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE CASCADE
+    )";
+    $pdo->exec($tableSql3);
+    echo "Table 'favourites' created successfully.<br>";
 
 } catch (PDOException $e) {
     echo "Error: " . $e->getMessage();
