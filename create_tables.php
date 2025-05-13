@@ -38,6 +38,7 @@ try {
         id INT AUTO_INCREMENT PRIMARY KEY,
         userId INT NOT NULL,
         genre VARCHAR(255),
+        UNIQUE KEY unique_genre_per_user (userId, genre),
         FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE CASCADE
     )";
     $pdo->exec($tableSqlGenres);
@@ -48,6 +49,7 @@ try {
         id INT AUTO_INCREMENT PRIMARY KEY,
         userId INT NOT NULL,
         artist VARCHAR(255),
+        UNIQUE KEY unique_artist_per_user (userId, artist),
         FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE CASCADE
     )";
     $pdo->exec($tableSqlArtists);
@@ -58,6 +60,7 @@ try {
         id INT AUTO_INCREMENT PRIMARY KEY,
         userId INT NOT NULL,
         album VARCHAR(255),
+        UNIQUE KEY unique_album_per_user (userId, album),
         FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE CASCADE
     )";
     $pdo->exec($tableSqlAlbums);

@@ -32,27 +32,42 @@ try {
 
     $userId = $data['userId'];
 
-    // Insert genres
+    // Insert genres without duplicates
     if (!empty($data['favGenres']) && is_array($data['favGenres'])) {
-        $stmt = $pdo->prepare("INSERT INTO favourite_genres (userId, genre) VALUES (:userId, :genre)");
+        $checkGenre = $pdo->prepare("SELECT COUNT(*) FROM favourite_genres WHERE userId = :userId AND genre = :genre");
+        $insertGenre = $pdo->prepare("INSERT INTO favourite_genres (userId, genre) VALUES (:userId, :genre)");
+
         foreach ($data['favGenres'] as $genre) {
-            $stmt->execute(['userId' => $userId, 'genre' => $genre]);
+            $checkGenre->execute(['userId' => $userId, 'genre' => $genre]);
+            if ($checkGenre->fetchColumn() == 0) {
+                $insertGenre->execute(['userId' => $userId, 'genre' => $genre]);
+            }
         }
     }
 
-    // Insert artists
+    // Insert artists without duplicates
     if (!empty($data['favArtists']) && is_array($data['favArtists'])) {
-        $stmt = $pdo->prepare("INSERT INTO favourite_artists (userId, artist) VALUES (:userId, :artist)");
+        $checkArtist = $pdo->prepare("SELECT COUNT(*) FROM favourite_artists WHERE userId = :userId AND artist = :artist");
+        $insertArtist = $pdo->prepare("INSERT INTO favourite_artists (userId, artist) VALUES (:userId, :artist)");
+
         foreach ($data['favArtists'] as $artist) {
-            $stmt->execute(['userId' => $userId, 'artist' => $artist]);
+            $checkArtist->execute(['userId' => $userId, 'artist' => $artist]);
+            if ($checkArtist->fetchColumn() == 0) {
+                $insertArtist->execute(['userId' => $userId, 'artist' => $artist]);
+            }
         }
     }
 
-    // Insert albums
+    // Insert albums without duplicates
     if (!empty($data['favAlbums']) && is_array($data['favAlbums'])) {
-        $stmt = $pdo->prepare("INSERT INTO favourite_albums (userId, album) VALUES (:userId, :album)");
+        $checkAlbum = $pdo->prepare("SELECT COUNT(*) FROM favourite_albums WHERE userId = :userId AND album = :album");
+        $insertAlbum = $pdo->prepare("INSERT INTO favourite_albums (userId, album) VALUES (:userId, :album)");
+
         foreach ($data['favAlbums'] as $album) {
-            $stmt->execute(['userId' => $userId, 'album' => $album]);
+            $checkAlbum->execute(['userId' => $userId, 'album' => $album]);
+            if ($checkAlbum->fetchColumn() == 0) {
+                $insertAlbum->execute(['userId' => $userId, 'album' => $album]);
+            }
         }
     }
 
